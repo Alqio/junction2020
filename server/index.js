@@ -1,5 +1,7 @@
+require('dotenv').config()
 const {spawn} = require('child_process')
 const dgram = require('dgram')
+const s3 = require("./s3")
 
 const sleep = (ms) => {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -13,7 +15,7 @@ const createEncoder = () => {
     return spawn(h264encoder_spawn.command, h264encoder_spawn.args)
 }
 
-const main = () => {
+const main = async () => {
 
     let encoder
 
@@ -36,7 +38,15 @@ const main = () => {
         buffer.push(msg)
         if (parsed === 'finished') {
             console.log("Finished")
-            
+            encoder.kill(2)
+            let url = await s3.upload('./out.mp4')
+            if (!url) {
+                url = "Failed to upload file"
+            }
+            socket.send(url, 0, url.length, 8124, (err) => {
+                if (err) console.log(err)
+            })
+
         } else {
             if (msg.length !== 1460) {
                 const frame = Buffer.concat(buffer)
@@ -46,11 +56,6 @@ const main = () => {
         }
 
     })
-
-    socket.on('close', () => {
-        //recorder.stdin.write('\x03')
-    })
-
 }
 
 main()

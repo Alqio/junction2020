@@ -9,6 +9,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "tellojs": "^0.1.99"
+    "aws-sdk": "^2.787.0",
+    "dotenv": "^8.2.0",
+    "uuid": "^8.3.1"
   }
 }
