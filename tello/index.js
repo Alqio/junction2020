@@ -63,6 +63,7 @@ const main = async () => {
     const commands = ["takeoff", "left 20", "back 20", "land"]
     for (let command of commands) {
         await sendCommand(messageSocket, command)
+        await sleep(3000)
     }
 
 }
