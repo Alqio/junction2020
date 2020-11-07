@@ -34,9 +34,9 @@ const main = () => {
 
         const parsed = msg.toString()
         buffer.push(msg)
-        //console.log(parsed)
         if (parsed === 'finished') {
-            console.log("Closing recorder")
+            console.log("Finished")
+            
         } else {
             if (msg.length !== 1460) {
                 const frame = Buffer.concat(buffer)
