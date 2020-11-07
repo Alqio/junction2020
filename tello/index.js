@@ -7,6 +7,7 @@ const dgram = require('dgram')
 const config = require('./config')
 const rl = require('./input').rl
 const fs = require('fs')
+const mjpeg = require('mp4-mjpeg')
 
 const sendCommand = async (socket, message) => {
     socket.send(message, 0, message.length, config.telloAddress.port, config.telloAddress.ip, err => {
@@ -68,12 +69,24 @@ const main = async () => {
     const asString = JSON.stringify(videoData)
     const asObject = JSON.parse(asString)
 
+    const mapped = asObject.map(chunk => chunk.data)
 
-    fs.writeFileSync('videoData', asString)
-    console.log(asString.substr(0, 100))
+    mjpeg({fileName: "video.mp4"})
+        .then(recorder => {
+            for (let frame of mapped) {
+                recorder.appendImageBuffer(frame)
+            }
+            recorder.finalize()
+        })
+        .catch(e => {
+            console.log("ERROR:", e)
+        })
 
-    const mapped = asObject.map(chunk => chunk.data).flat()
-    fs.writeFileSync('videoDataJoined', mapped.join())
+    //fs.writeFileSync('videoData', asString)
+    //console.log(asString.substr(0, 100))
+
+
+    fs.writeFileSync('videoDataJoined.mp4', mapped.flat().join())
     console.log("wrote files")
 
 }

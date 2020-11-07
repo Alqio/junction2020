@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "mp4-mjpeg": "0.0.2",
     "socket.io": "^3.0.0"
   }
 }
