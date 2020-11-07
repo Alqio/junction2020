@@ -38,12 +38,17 @@ const main = () => {
             await sleep(300)
         }
 
+        if (msg === 'finished') {
+            recorder.stdin.write('\x03')
+            console.log("Closing recorder")
+        }
+
         console.log(msg)
         encoder.stdin.write(msg)
     })
 
     socket.on('close', () => {
-        recorder.kill(2)
+        recorder.stdin.write('\x03')
     })
 
 }
