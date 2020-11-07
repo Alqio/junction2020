@@ -1,8 +1,5 @@
 const {spawn} = require('child_process')
 const sdk = require('tellojs')
-const converter = require('./convertFile')
-
-let first = true
 
 const port = 8124
 const host = 'localhost'
@@ -13,18 +10,14 @@ const errorHandler = (err) => {
 
 const bindVideo = async (socket) => {
     const videoEmitter = await sdk.receiver.video.bind()
-    videoEmitter.on('message', msg => {
-        if (first) {
-            socket.send('first', 0, 'first'.length, port, host, err => {
-            })
-            first = false
-        }
 
+    videoEmitter.on('message', msg => {
         socket.send(msg, 0, msg.length, port, host, errorHandler)
 
     })
 
     videoEmitter.on('close', () => {
+        console.log("finished")
         socket.send('finished', 0, 'finished'.length, port, host, errorHandler)
     })
 }
