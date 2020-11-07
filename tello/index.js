@@ -59,35 +59,11 @@ const main = async () => {
     console.log("Connected and sent 'command'")
 
     await sleep(1000)
-    await sendCommand(messageSocket, 'streamon')
 
-    await sleep(5000)
-
-    await sendCommand(messageSocket, 'streamoff')
-    //await sendCommand(messageSocket, 'end')
-
-    const asString = JSON.stringify(videoData)
-    const asObject = JSON.parse(asString)
-
-    const mapped = asObject.map(chunk => chunk.data)
-
-    mjpeg({fileName: "video.mp4"})
-        .then(recorder => {
-            for (let frame of mapped) {
-                recorder.appendImageBuffer(frame)
-            }
-            recorder.finalize()
-        })
-        .catch(e => {
-            console.log("ERROR:", e)
-        })
-
-    //fs.writeFileSync('videoData', asString)
-    //console.log(asString.substr(0, 100))
-
-
-    fs.writeFileSync('videoDataJoined.mp4', mapped.flat().join())
-    console.log("wrote files")
+    const commands = ["takeoff", "left 20", "back 20", "land"]
+    for (let command of commands) {
+        await sendCommand(messageSocket, command)
+    }
 
 }
 
