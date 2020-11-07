@@ -8,7 +8,7 @@ const sleep = (ms) => {
 const createEncoder = () => {
     const h264encoder_spawn = {
         "command": 'mplayer',
-        "args": ['-gui', '-nolirc', '-fps', '35', '-really-quiet', '-']
+        "args": ['gui', '-nolirc', '-fps', '35', '-really-quiet', '-']
     }
     return spawn(h264encoder_spawn.command, h264encoder_spawn.args)
 }
@@ -25,7 +25,11 @@ const main = () => {
     let encoder, recorder
 
     const socket = dgram.createSocket('udp4')
-    socket.bind(8124)
+    socket.bind({
+        address: 'localhost',
+        port: 8124,
+        exclusive: true
+    })
 
     socket.on('message', async (msg) => {
         if (!encoder) {
@@ -38,13 +42,16 @@ const main = () => {
             await sleep(300)
         }
 
-        if (msg === 'finished') {
-            recorder.stdin.write('\x03')
+        const parsed = msg.toString()
+
+        //console.log(parsed)
+        if (parsed === 'finished') {
             console.log("Closing recorder")
+            recorder.stdin.write('^C\n')
+        } else {
+            encoder.stdin.write(msg)
         }
 
-        console.log(msg)
-        encoder.stdin.write(msg)
     })
 
     socket.on('close', () => {
