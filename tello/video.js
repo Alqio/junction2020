@@ -1,7 +1,6 @@
-const {spawn} = require('child_process')
 const sdk = require('tellojs')
 
-const port = 8124
+const port = 8125
 const host = 'localhost'
 
 const errorHandler = (err) => {
@@ -13,7 +12,6 @@ const bindVideo = async (socket) => {
 
     videoEmitter.on('message', msg => {
         socket.send(msg, 0, msg.length, port, host, errorHandler)
-
     })
 
     videoEmitter.on('close', () => {

@@ -1,6 +1,5 @@
 const sdk = require('tellojs')
 const video = require('./video')
-const converter = require('./convertFile')
 const dgram = require('dgram')
 
 const port = 8124
@@ -11,7 +10,11 @@ const sleep = (ms) => {
 }
 
 const connect = () => {
-    return dgram.createSocket('udp4')
+    const socket = dgram.createSocket('udp4')
+    socket.on('message', (msg) => {
+        console.log("Received message:", msg.toString())
+    })
+    return socket
 }
 
 const main = async () => {
@@ -22,7 +25,14 @@ const main = async () => {
 
         await video.bindVideo(serverSocket)
 
-        await sleep(10000)
+        await sdk.control.takeOff()
+        await sleep(1500)
+        await sdk.control.rotate.clockwise(30)
+        await sleep(1500)
+        await sdk.control.move.front(30)
+        await sleep(2000)
+        await sdk.control.land()
+        await sleep(2000)
 
         await sdk.receiver.video.close()
         serverSocket.send('finished', 0, 'finished'.length, port, host, err => {

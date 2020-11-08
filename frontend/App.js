@@ -11,7 +11,7 @@ import MainPage from './src/components/MainPage'
 const Stack = createStackNavigator();
 
 const headerOptions ={
-          title: 'Dronelysis',
+          title: 'Drone-Alone',
           headerStyle: {
             backgroundColor: '#585858',
           },
