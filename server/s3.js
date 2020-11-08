@@ -4,7 +4,8 @@ const { v4: uuidv4 } = require('uuid')
 
 const s3 = new AWS.S3({
     accessKeyId: process.env.ACCESS_KEY,
-    secretAccessKey: process.env.SECRET_ACCESS_KEY
+    secretAccessKey: process.env.SECRET_ACCESS_KEY,
+    region: "eu-central-1"
 });
 
 const upload = async (fileName) => {
@@ -22,7 +23,7 @@ const upload = async (fileName) => {
         console.log(`File uploaded successfully. ${res.Location}`);
         return res.Location
     } catch (e) {
-        console.log(e)
+        //console.log(e)
     }
 }
 
